@@ -6,14 +6,25 @@ import CNN
 import numpy as np
 import torch
 import pandas as pd
+import gdown  # NEW
+
+# Google Drive file ID of your model
+model_url = "https://drive.google.com/file/d/1NWcvuMbGSQyu3-vf2GF3THcTycksKCJl/view?usp=sharing"
+model_path = "plant_disease_model_1_latest.pt"
+
+# Download model if not exists
+if not os.path.exists(model_path):
+    print("Downloading model from Google Drive...")
+    gdown.download(model_url, model_path, quiet=False)
 
 # Load disease information
 disease_info = pd.read_csv('disease_info.csv', encoding='cp1252')
 
 # Load the trained model
 model = CNN.CNN(39)
-model.load_state_dict(torch.load("plant_disease_model_1_latest.pt", map_location=torch.device('cpu')))
+model.load_state_dict(torch.load(model_path, map_location=torch.device('cpu')))
 model.eval()
+
 
 def predict_disease(image_path):
     """Predict the disease from the given image."""
